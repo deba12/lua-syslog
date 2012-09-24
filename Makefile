@@ -1,15 +1,14 @@
 # makefile for lsyslog library for Lua
 
 # change these to reflect your Lua installation
-LUA= $(LUA_SRC)
-LUAINC= $(LUA)/include
-LUALIB= $(LUA)/lib
-LUABIN= $(LUA)/bin
+LUA=luajit
+LUAINC=`pkg-config ${LUA} --cflags`
+LUALIB=`pkg-config ${LUA} --libs`
+LUABIN=luajit-2.0.0-beta9
 
 # no need to change anything below here
-CFLAGS= $(INCS) $(WARN) -O2 $G
-WARN= -pedantic -Wall
-INCS= -I$(LUAINC)
+CFLAGS= $(LUAINC) $(WARN) -fPIC -O3 $G
+WARN= -pedantic -Wall -Werror
 
 MYNAME= syslog
 MYLIB= $(MYNAME)
@@ -20,7 +19,7 @@ TEST= test.lua
 all:	test
 
 test:	$T
-	LUA_CPATH='./?.so' $(LUABIN)/lua -l$(MYNAME) $(TEST)
+	LUA_CPATH='./?.so' $(LUABIN) -l$(MYNAME) $(TEST)
 
 o:	$(MYLIB).o
 
